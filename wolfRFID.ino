@@ -6,6 +6,7 @@
 #define SS_PIN 10
 #define RST_PIN 9
 MFRC522 reader(SS_PIN, RST_PIN);
+const byte arr[] = "cc08f034mm120p10d000cb70f0665rf099p12d081c";
 
 byte cardData[8];
 byte eepromData[1025];
@@ -14,9 +15,6 @@ void setup() {
   Serial.begin(9600);
   SPI.begin();
   reader.PCD_Init();
-
-  const byte arr[] = "8162617bmm120p10d000c";
-  Serial.println(wolfData(arr));
 }
 
 void loop() {
@@ -29,7 +27,10 @@ void loop() {
   if ( ! reader.PICC_ReadCardSerial()) {
     return;
   }
-  Serial.println(readID(reader));
+  String id = readID(reader);
+  //Serial.println(id);
+  String found = findInArray(arr, id);
+  Serial.println(wolfData(found.c_str()));
   reader.PICC_HaltA();
 
 }

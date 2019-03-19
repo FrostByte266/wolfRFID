@@ -19,6 +19,20 @@ wolf::wolf(const byte _id[4]){
 
 }
 
+String findInArray(const byte blob[], const String& id){
+  String frame;
+  for(int i=0; i<1024; i+=21){
+    frame = sliceArray(blob, i, i+20);
+    Serial.print("Frame: ");
+    Serial.println(frame);
+    String temp = sliceArray(frame.c_str(), 0, 7);
+    if(temp == id){
+        break;
+    }
+  }
+  return frame;
+}
+
 void wolf::dataFromBlob(const int& position, const byte blob[1025], String out[]){
 
 }
