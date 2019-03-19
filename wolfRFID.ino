@@ -61,3 +61,15 @@ String readID() {
   Serial.println(makeUidString(uidBytes));
   return makeUidString(uidBytes));
 }
+
+String wolfData(char wolfData[]) {
+  String uid = sliceArray(wolfData, 0, 7);
+  String species = wolfData[8];
+  String gender = wolfData[9];
+  String weight = sliceArray(wolfData, 10, 13);
+  String last_seen = sliceArray(wolfData, 14, 16);
+  String scan_count = sliceArray(wolfData, 17, 19);
+  char data_out[255];
+  sprintf(data_out, "UID: %s, Species: %s, Gender: %s, Weight: %s, Last Seen: %s, Scan Count: %s", uid, species, gender, weight, last_seen, scan_count);
+}
+
