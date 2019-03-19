@@ -65,12 +65,38 @@ String readID(MFRC522 _reader) {
 
 String wolfData(char wolfData[]) {
   String uid = sliceArray(wolfData, 0, 7);
-  char species = wolfData[8];
-  char gender = wolfData[9];
+  char species_r = wolfData[8];
+  switch(species_r){
+    case 'g':
+      String species = "Gray";
+      break;
+    case 'm':
+      String species = "Mexican Gray Wolf";
+      break;
+    case 'r':
+      String species = "Red Wolf";
+      break;
+    default:
+      String species = "ERROR";
+      break;
+  }
+  char sex_r = wolfData[9];
+  switch(sex_r){
+    case 'm':
+      String sex = "Male";
+      break;
+    case 'f'
+      String sex = "Female";
+      break;
+    default:
+      String sex = "ERROR";
+      break;
+  }
   String weight = sliceArray(wolfData, 10, 13);
   String last_seen = sliceArray(wolfData, 14, 16);
   String scan_count = sliceArray(wolfData, 17, 19);
   char data_out[255];
-  sprintf(data_out, "UID: %s, Species: %c, Gender: %c, Weight: %s, Last Seen: %s, Scan Count: %s", uid.c_str(), species, gender, weight.c_str(), last_seen.c_str(), scan_count.c_str());
+  sprintf(data_out, "UID: %s, Species: %c, Sex: %c, Weight: %s, Last Seen: %s, Scan Count: %s", uid.c_str(), species, sex, weight.c_str(), last_seen.c_str(), scan_count.c_str());
   return data_out;
+  
 }
