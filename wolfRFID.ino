@@ -8,13 +8,15 @@
 MFRC522 reader(SS_PIN, RST_PIN);
 
 byte cardData[8];
-byte eepromData[1024];
+byte eepromData[1025];
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   SPI.begin();
   reader.PCD_Init();
+
+  const byte arr[] = "8162617bmm120p10d000c";
+  Serial.println(wolfData(arr));
 }
 
 void loop() {
@@ -27,7 +29,7 @@ void loop() {
   if ( ! reader.PICC_ReadCardSerial()) {
     return;
   }
-  
+  Serial.println(readID(reader));
   reader.PICC_HaltA();
 
 }
@@ -52,14 +54,25 @@ String makeUidString(byte in[]) {
     out += temp;
   }
   return out;
- 
+
 }
 
-String readID() {
+String readID(MFRC522 _reader) {
   byte uidBytes[4];
-  readToArray(reader.uid.uidByte, uidBytes);
-  Serial.println(makeUidString(uidBytes));
-  return makeUidString(uidBytes));
+  readToArray(_reader.uid.uidByte, uidBytes);
+  return makeUidString(uidBytes);
+}
+
+String wolfData(char wolfData[]) {
+  String uid = sliceArray(wolfData, 0, 7);
+  char species = wolfData[8];
+  char gender = wolfData[9];
+  String weight = sliceArray(wolfData, 10, 13);
+  String last_seen = sliceArray(wolfData, 14, 16);
+  String scan_count = sliceArray(wolfData, 17, 19);
+  char data_out[255];
+  sprintf(data_out, "UID: %s, Species: %c, Gender: %c, Weight: %s, Last Seen: %s, Scan Count: %s", uid.c_str(), species, gender, weight.c_str(), last_seen.c_str(), scan_count.c_str());
+  return data_out;
 }
 
 String wolfData(char wolfData[]) {
