@@ -27,6 +27,8 @@ void loop() {
   if ( ! reader.PICC_ReadCardSerial()) {
     return;
   }
+  
+  void loop() {
   byte uidBytes[4];
   readToArray(reader.uid.uidByte, uidBytes);
   Serial.println(makeUidString(uidBytes));
