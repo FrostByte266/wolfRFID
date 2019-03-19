@@ -28,10 +28,6 @@ void loop() {
     return;
   }
   
-  void loop() {
-  byte uidBytes[4];
-  readToArray(reader.uid.uidByte, uidBytes);
-  Serial.println(makeUidString(uidBytes));
   reader.PICC_HaltA();
 
 }
@@ -56,4 +52,12 @@ String makeUidString(byte in[]) {
     out += temp;
   }
   return out;
+ 
+}
+
+String readID() {
+  byte uidBytes[4];
+  readToArray(reader.uid.uidByte, uidBytes);
+  Serial.println(makeUidString(uidBytes));
+  return makeUidString(uidBytes));
 }
