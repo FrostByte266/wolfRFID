@@ -65,8 +65,8 @@ String readID(MFRC522 _reader) {
 
 String wolfData(char wolfData[]) {
   String uid = sliceArray(wolfData, 0, 7);
-  char species = wolfData[8];
-  char gender = wolfData[9];
+  char species_r = wolfData[8];
+  char sex_r = wolfData[9];
   String weight = sliceArray(wolfData, 10, 13);
   String last_seen = sliceArray(wolfData, 14, 16);
   String scan_count = sliceArray(wolfData, 17, 19);
