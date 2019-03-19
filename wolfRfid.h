@@ -4,10 +4,11 @@
 class wolf{
 public:
   wolf();
-  void dataFromBlob(const int& position, const char* blob[]);
+  void dataFromBlob(const int& position, const unsigned char* blob[]);
 private:
   unsigned char species;
   unsigned int weight;
+  unsigned int id[4];
 
 };
 
