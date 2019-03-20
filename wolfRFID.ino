@@ -5,6 +5,8 @@
 
 #define SS_PIN 10
 #define RST_PIN 9
+#define SAVE_SIGNAL 2
+
 MFRC522 reader(SS_PIN, RST_PIN);
 byte eepromToWrite[] = "533e9fd3mm120p10d000c969251d3rf099p12d081c";
 byte arr[43];
@@ -93,11 +95,38 @@ String wolfData(const byte wolfData[]) {
       sex = "ERROR";
       break;
   }
-  String weight = sliceArray(wolfData, 10, 12);
+  int weight = sliceArray(wolfData, 10, 12).toInt();
   String last_seen = sliceArray(wolfData, 14, 15);
-  String scan_count = sliceArray(wolfData, 17, 19);
+  int scan_count = sliceArray(wolfData, 17, 19).toInt();
   char data_out[255];
-  sprintf(data_out, "UID: %s\nSpecies: %s\nSex: %s\nWeight: %slbs\nLast Seen: %s days\nScan Count: %s", uid.c_str(), species.c_str(), sex.c_str(), weight.c_str(), last_seen.c_str(), scan_count.c_str());
+  sprintf(data_out, "UID: %s\nSpecies: %s\nSex: %s\nWeight: %d lbs\nLast Seen: %s days\nScan Count: %d", uid.c_str(), species.c_str(), sex.c_str(), weight, last_seen.c_str(), scan_count);
   //Serial.println(data_out);
   return data_out;
+}
+
+String sliceArray(const byte blob[], const int& start, const int& end){
+  String str;
+  char temp[8];
+  for(int i=start; i<=end; i++){
+    sprintf(temp, "%c", blob[i]);
+    str += temp;
+  }
+  return str;
+}
+
+String findInArray(const byte blob[], const String& id){
+  String frame;
+  for(int i=0; i<1024; i+=21){
+    frame = sliceArray(blob, i, i+20);
+    Serial.print("Searching Frame: ");
+    Serial.println(frame);
+    String temp = sliceArray(frame.c_str(), 0, 7);
+    if(temp == id){
+      Serial.println("Found ID! Printing Data...");
+      break;
+    }else{
+      Serial.println("ID not found, continuing to next frame.");
+    }
+  }
+  return frame;
 }

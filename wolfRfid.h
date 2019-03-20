@@ -3,10 +3,6 @@
 
 #include<Arduino.h>
 
-String sliceArray(const byte blob[], const int& start, const int& end);
-
-String findInArray(const byte blob[], const String& id);
-
 class wolf{
 public:
   wolf(const byte _id[4]);
