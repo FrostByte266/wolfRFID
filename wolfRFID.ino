@@ -24,6 +24,7 @@ void setup() {
 
 void loop() {
 
+ /*
   if ( ! reader.PICC_IsNewCardPresent()) {
     return;
   }
@@ -36,6 +37,7 @@ void loop() {
   String found = findInArray(arr, id);
   Serial.println(wolfData(found.c_str()));
   reader.PICC_HaltA();
+  */
 
 }
 
