@@ -36,7 +36,7 @@ void loop() {
   }
   String id = readID(reader);
   String found = findInArray(arr, id);
-  Serial.println(wolfData(found.c_str()));
+  Serial.println(wolfData(found.c_str(), id));
   reader.PICC_HaltA();
 
 }
@@ -64,7 +64,7 @@ String readID(MFRC522 _reader) {
   return makeUidString(uidBytes);
 }
 
-String wolfData(const byte wolfData[]) {
+String wolfData(const byte wolfData[], const String& id) {
   String uid = sliceArray(wolfData, 0, 7);
   char species_r = wolfData[8];
   String species;
@@ -97,7 +97,7 @@ String wolfData(const byte wolfData[]) {
   }
   int weight = sliceArray(wolfData, 10, 12).toInt();
   String last_seen = sliceArray(wolfData, 14, 15);
-  int scan_count = sliceArray(wolfData, 17, 19).toInt();
+  int scan_count = incrementScanCount(id);
   char data_out[255];
   sprintf(data_out, "UID: %s\nSpecies: %s\nSex: %s\nWeight: %d lbs\nLast Seen: %s days\nScan Count: %d", uid.c_str(), species.c_str(), sex.c_str(), weight, last_seen.c_str(), scan_count);
   //Serial.println(data_out);
@@ -129,4 +129,38 @@ String findInArray(const byte blob[], const String& id){
     }
   }
   return frame;
+}
+
+int findCountHandle(const byte blob[], const String& id){
+  String frame;
+  for(int i=0; i<1024; i+=21){
+    frame = sliceArray(blob, i, i+20);
+    String temp = sliceArray(frame.c_str(), 0, 7);
+    if(temp == id){
+      return i+17;
+    }
+  }
+}
+
+int incrementScanCount(const String& id){
+  char temp[3];
+  const int handle = findCountHandle(arr, id);
+  for(int i=handle; i<handle + 3; i++){
+    for(int j = 0; j<3; j++){
+      temp[j] = arr[i];
+    }
+  }
+  Serial.print("Read from frame: ");
+  Serial.println(temp);
+  int temp_i = String(temp).toInt();
+  int rvalue = temp_i + 1;
+  sprintf(temp, "%03d", rvalue);
+  Serial.print("Incremented value: ");
+  Serial.println(temp);
+  for(int i = handle; i<handle + 3; i++){
+    for(int j = 0; j<3; j++){
+      arr[i] = temp[j];
+    }
+  }
+  return rvalue;
 }
