@@ -6,7 +6,7 @@
 #define SS_PIN 10
 #define RST_PIN 9
 MFRC522 reader(SS_PIN, RST_PIN);
-byte arr1[] = "533e9fd3mm120p10d000c969251d3rf099p12d081c";
+byte eepromToWrite[] = "533e9fd3mm120p10d000c969251d3rf099p12d081c";
 byte arr[43];
 byte cardData[8];
 //byte eepromData[1025];
@@ -15,8 +15,10 @@ void setup() {
   Serial.begin(9600);
   SPI.begin();
   reader.PCD_Init();
-  //EEPROM.put(0, arr1);
-  //Serial.println("Wrote to eeprom");
+  /*
+  EEPROM.put(0, eepromToWrite);
+  Serial.println("Wrote to eeprom");
+  */
   EEPROM.get(0, arr);
 }
 
@@ -31,10 +33,7 @@ void loop() {
     return;
   }
   String id = readID(reader);
-  Serial.println(id);
   String found = findInArray(arr, id);
-  //Serial.println(found);
-  //wolfData(found.c_str());
   Serial.println(wolfData(found.c_str()));
   reader.PICC_HaltA();
 
@@ -63,12 +62,8 @@ String readID(MFRC522 _reader) {
   return makeUidString(uidBytes);
 }
 
-String wolfData(String _wolfData) {
-  char wolfData[255];
-  _wolfData.toCharArray(wolfData, 22);
-  //Serial.println(_wolfData);
+String wolfData(const byte wolfData[]) {
   String uid = sliceArray(wolfData, 0, 7);
-  //Serial.println(uid);
   char species_r = wolfData[8];
   String species;
   switch(species_r){
