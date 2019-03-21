@@ -8,7 +8,7 @@
 #define SAVE_SIGNAL 2
 
 MFRC522 reader(SS_PIN, RST_PIN);
-byte eepromToWrite[] = "533e9fd3mm120p10d000c969251d3rf099p12d081c";
+byte eepromToWrite[] = "533e9fd3mm120p10d000c969251d3rf099p12d000c";
 byte arr[43];
 byte cardData[8];
 //byte eepromData[1025];
@@ -17,6 +17,7 @@ void setup() {
   Serial.begin(9600);
   SPI.begin();
   reader.PCD_Init();
+  pinMode(SAVE_SIGNAL, INPUT);
   /*
   EEPROM.put(0, eepromToWrite);
   Serial.println("Wrote to eeprom");
@@ -25,6 +26,16 @@ void setup() {
 }
 
 void loop() {
+/*
+  if(digitalRead(SAVE_SIGNAL) == HIGH){
+    Serial.println("Saving...");
+    EEPROM.put(0, arr);
+    Serial.println("Save complete. Please release save button...");
+    while(digitalRead(SAVE_SIGNAL) == HIGH){
+      continue;
+    }
+  }
+  */
 
   if ( ! reader.PICC_IsNewCardPresent()) {
     return;
@@ -145,22 +156,14 @@ int findCountHandle(const byte blob[], const String& id){
 int incrementScanCount(const String& id){
   char temp[3];
   const int handle = findCountHandle(arr, id);
-  for(int i=handle; i<handle + 3; i++){
-    for(int j = 0; j<3; j++){
-      temp[j] = arr[i];
-    }
-  }
-  Serial.print("Read from frame: ");
-  Serial.println(temp);
-  int temp_i = String(temp).toInt();
+  temp[0] = arr[handle];
+  temp[1] = arr[handle + 1];
+  temp[2] = arr[handle + 2];
+  int temp_i = atoi(temp);
   int rvalue = temp_i + 1;
   sprintf(temp, "%03d", rvalue);
-  Serial.print("Incremented value: ");
-  Serial.println(temp);
-  for(int i = handle; i<handle + 3; i++){
-    for(int j = 0; j<3; j++){
-      arr[i] = temp[j];
-    }
-  }
+  arr[handle] = temp[0];
+  arr[handle + 1] = temp[1];
+  arr[handle + 2] = temp[2];
   return rvalue;
 }
