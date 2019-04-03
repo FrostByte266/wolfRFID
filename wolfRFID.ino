@@ -11,7 +11,6 @@ MFRC522 reader(SS_PIN, RST_PIN);
 byte eepromToWrite[] = "533e9fd3mm120p10d000c969251d3rf099p12d000c";
 byte arr[43];
 byte cardData[8];
-//byte eepromData[1025];
 
 void setup() {
   Serial.begin(9600);
