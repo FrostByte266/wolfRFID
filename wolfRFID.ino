@@ -121,6 +121,7 @@ String wolfData(const byte wolfData[], const String& id) {
       sex = "ERROR";
       break;
   }
+  //Get other values from frame
   int weight = sliceArray(wolfData, 10, 12).toInt();
   String last_seen = sliceArray(wolfData, 14, 15);
   int scan_count = incrementScanCount(id);
@@ -168,13 +169,13 @@ String findInArray(const byte blob[], const String& id){
 }
 
 int findCountHandle(const byte blob[], const String& id){
-  //Searches the blob and returns the position of the scan count in EEPROm
+  //Searches the blob and returns the position of the scan count in EEPROM
   String frame;
   for(int i=0; i<1024; i+=21){
     //Get current frame
     frame = sliceArray(blob, i, i+20);
     String temp = sliceArray(frame.c_str(), 0, 7);
-    //If the ID matches what we are looking for, returnt he position of the scan count
+    //If the ID matches what we are looking for, return the position of the scan count
     if(temp == id){
       return i+17;
     }
